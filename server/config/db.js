@@ -1,32 +1,39 @@
 // server/config/db.js
-// Purpose: own the MongoDB connection logic in ONE place.
+// Purpose: own MongoDB connection logic.
+// Change: start trying to connect, but DON'T crash the process if Mongo is slow/unavailable.
+// This prevents Render 502/503 during cold starts.
 
 const mongoose = require("mongoose");
 
-/**
- * Connect to MongoDB using the URI we pass in.
- * - Keep this file "pure" (no dotenv here) so it's easy to test.
- * - Throw errors up to the caller so startup can fail fast & clearly.
- */
-async function connectDB(mongoUri) {
-  if (!mongoUri) {
-    throw new Error("connectDB: mongoUri was not provided");
+async function connectDB(uri) {
+  if (!uri) {
+    console.error("connectDB: no Mongo URI provided");
+    return; // don't throw; let the app run /health while we figure it out
   }
 
-  // Optional: quiet some deprecation warnings in some setups.
-  // mongoose.set("strictQuery", true);
+  let attempt = 0;
+  const max = 5; // try a few times on boot
 
-  // Modern Mongoose: no extra options necessary for Atlas
-  await mongoose.connect(mongoUri, {});
+  while (attempt < max && mongoose.connection.readyState !== 1) {
+    attempt++;
+    try {
+      // Modern Mongoose: no extra options needed for Atlas
+      await mongoose.connect(uri, {});
+      const { host, name } = mongoose.connection;
+      console.log(`✅ MongoDB connected → host: ${host}  db: ${name}`);
+      return;
+    } catch (err) {
+      console.error(`⚠️ Mongo connect attempt ${attempt} failed: ${err.message}`);
+      // Exponential-ish backoff: 1s, 2s, 3s, ...
+      if (attempt < max) await new Promise(r => setTimeout(r, 1000 * attempt));
+    }
+  }
 
-  // Nice console message so we know where we're connected.
-  const { host, name } = mongoose.connection;
-  console.log(`✅ MongoDB connected → host: ${host}  db: ${name}`);
+  // If we still didn't connect, keep the app running.
+  // /api/health will still be 200; /api/ready will report DB state.
+  console.warn("⚠️ Mongo not connected after retries; app remains up, will connect on next deploy.");
 }
 
-/**
- * Close the Mongo connection (used on shutdown).
- */
 async function closeDB() {
   await mongoose.connection.close();
   console.log("🛑 MongoDB connection closed");
