@@ -1,0 +1,80 @@
+/* styles.css
+ * Purpose: tiny design system (colors, spacing, typography) and simple, responsive layout.
+ * Keep it small so the site loads fast and is easy to maintain.
+ */
+
+:root{
+  --bg: #0b0c10;
+  --panel: #111218;
+  --text: #e8e8ea;
+  --muted: #b5b5bf;
+  --brand: #5b8cff;       /* calm blue accent */
+  --brand-ink: #0b3b9e;
+  --ok: #1db954;
+  --err: #ff5757;
+
+  --maxw: 1100px;
+  --radius: 14px;
+  --space: 1rem;
+  --space-lg: 2rem;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, var(--bg), #0f1017);
+}
+
+/* Layout */
+.container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: var(--space-lg) var(--space); }
+.section { padding: var(--space-lg) var(--space); }
+.section--muted { background: #0f1118; }
+.section__title { font-size: clamp(1.6rem, 1.4rem + 1vw, 2rem); margin: 0 0 1rem; }
+
+/* Nav */
+.nav { position: sticky; top: 0; background: rgba(15,16,23,0.8); backdrop-filter: blur(8px); border-bottom: 1px solid #1b1c22; z-index: 10; }
+.nav__inner { max-width: var(--maxw); margin: 0 auto; padding: .8rem var(--space); display: flex; align-items: center; justify-content: space-between; }
+.brand { color: var(--text); font-weight: 700; text-decoration: none; font-size: 1.1rem; }
+.nav__links { display: flex; gap: .6rem; align-items: center; }
+.nav__link { text-decoration: none; color: var(--text); padding: .45rem .7rem; border-radius: 999px; }
+.nav__link:hover { background: #181a22; }
+.nav__link.active { background: #181a22; }
+
+/* Hero */
+.hero { padding: calc(var(--space-lg) * 2) var(--space) var(--space-lg); background: radial-gradient(60% 60% at 50% 10%, #1a1f31 0%, transparent 70%); }
+.hero__inner { max-width: var(--maxw); margin: 0 auto; text-align: left; }
+.hero__title { font-size: clamp(2rem, 1.2rem + 3vw, 3rem); line-height: 1.1; margin: 0 0 .8rem; }
+.hero__subtitle { color: var(--muted); max-width: 52ch; }
+.hero__cta { display: flex; gap: .8rem; margin-top: 1.2rem; flex-wrap: wrap; }
+
+/* Cards and grids */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+.card { background: var(--panel); border: 1px solid #1b1c22; border-radius: var(--radius); padding: 1rem; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: .6rem 1rem; border-radius: 999px; border: 1px solid #2a2c36; text-decoration: none; color: var(--text); }
+.btn:hover { background: #181a22; }
+.btn--primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn--primary:hover { background: var(--brand-ink); }
+.btn--ghost { background: transparent; }
+
+/* Forms */
+.form { display: grid; gap: .8rem; max-width: 560px; }
+.form__label { display: grid; gap: .4rem; font-weight: 600; }
+.form__input, .form__textarea {
+  width: 100%; padding: .7rem .8rem; border-radius: 10px; border: 1px solid #2a2c36; background: #0e1017; color: var(--text);
+}
+.form__input:focus, .form__textarea:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+/* Notes */
+.note { margin-top: .6rem; font-size: .95rem; }
+.note--success { color: var(--ok); }
+.note--error { color: var(--err); }
+
+/* Footer */
+.footer { border-top: 1px solid #1b1c22; background: #0f1118; }
+.footer__inner { max-width: var(--maxw); margin: 0 auto; padding: 1rem var(--space); color: var(--muted); display: grid; gap: .2rem; }
+.footer a { color: var(--text); }

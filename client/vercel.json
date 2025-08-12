@@ -1,0 +1,5 @@
+{
+  "//": "Ensure client-side routes (React Router) work when someone loads /services or /contact directly.",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "ignoreCommand": "echo handled-by-build-filter"
+}
