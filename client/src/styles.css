@@ -65,7 +65,10 @@ body {
 .form { display: grid; gap: .8rem; max-width: 560px; }
 .form__label { display: grid; gap: .4rem; font-weight: 600; }
 .form__input, .form__textarea {
+  font:inherit; color:inherit;
   width: 100%; padding: .7rem .8rem; border-radius: 10px; border: 1px solid #2a2c36; background: #0e1017; color: var(--text);
+  line-height: 1.4;
+  resize:vertical;
 }
 .form__input:focus, .form__textarea:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
 
